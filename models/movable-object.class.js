@@ -6,6 +6,8 @@ export class MovableObject {
 
     height = 150;
     width = 100;
+    screenX = 480;
+    screenY = 720;
 
     loadImage(path){
         this.img = new Image();
