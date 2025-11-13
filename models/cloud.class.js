@@ -1,17 +1,28 @@
 import { MovableObject } from "./movable-object.class.js";
 
-export class Cloud extends MovableObject{
+export class Cloud extends MovableObject {
 
-    constructor(){
-        super()
-        this.loadImage('img/5_background/layers/4_clouds/1.png')
+    constructor(imagePath, x, y, width, height, speed) {
+        super();
+        this.loadImage(imagePath);
 
-        this.x = Math.random() * 300;
-        this.y = 50;
-        this.width = 500;
-        this.height = 250;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.speed = speed;
+        
+        this.animate();
     }
 
-
-    
+    animate() {
+        setInterval(() => {
+            this.x -= this.speed;
+            
+            // Respawn rechts wenn links raus
+            if(this.x < -this.width) {
+                this.x = 720 + Math.random() * 200;  // Startet etwas rechts außerhalb
+            }
+        }, 1000 / 60);
+    }
 }
