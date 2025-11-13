@@ -14,9 +14,9 @@ export class World {
   // ═══════════════════════════════════════════════
   // WOLKEN - 3 LAYER mit verschiedenen Geschwindigkeiten
   // ═══════════════════════════════════════════════
-  //new Cloud(imagePath, x, y, width, height, speed)
-  //        ↓         ↓  ↓   ↓      ↓       ↓
-  //      Bild      100 20  300    150    0.1
+  // new Cloud(imagePath, x, y, width, height, speed)
+  //        ↓             ↓  ↓     ↓      ↓       ↓
+  //      Bild          100  20    300     150    0.1
 
   // imagePath = Welches Wolken-Bild
   // x = Startposition horizontal
