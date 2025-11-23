@@ -191,10 +191,27 @@ export class World {
    * this.addToMap(this.character);
    * this.clouds.forEach(cloud => this.addToMap(cloud));
    */
-  addToMap(mo) {
-    // Prüfe ob Objekt existiert UND Bild geladen ist
-    if (mo && mo.img && mo.img.complete) {
-      this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+ addToMap(mo) {
+    if (mo.otherDirection) {
+        this.flipImage(mo);
     }
-  }
+    
+    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+    
+    if (mo.otherDirection) {
+        this.flipImageBack(mo);
+    }
+}
+
+flipImage(mo) {
+    this.ctx.save();
+    this.ctx.translate(mo.width, 0);
+    this.ctx.scale(-1, 1);
+    mo.x = mo.x * -1;
+}
+
+flipImageBack(mo) {
+    mo.x = mo.x * -1;
+    this.ctx.restore();
+}
 }

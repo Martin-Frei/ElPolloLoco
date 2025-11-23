@@ -82,7 +82,7 @@ export class Character extends MovableObject {
    * @description 5 Pixel pro Frame bei 60 FPS = ca. 300 Pixel pro Sekunde.
    * Steuert wie schnell Pepe nach links/rechts läuft.
    */
-  speed = 5;
+  speed = 1.8;
 
   /**
    * Vertikale Geschwindigkeit (für Springen und Fallen)
@@ -130,6 +130,8 @@ export class Character extends MovableObject {
    * Im Spiel: a = 2.5 Pixel/Frame² (angepasst für Spielgefühl)
    */
   acceleration = 1.0;
+
+  otherDirection = false;
 
   // ═══════════════════════════════════════════════════════════════
   // CONSTRUCTOR
@@ -231,11 +233,13 @@ export class Character extends MovableObject {
       // RIGHT-Bewegung (Pfeil-Rechts oder D-Taste)
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
+        this.otherDirection = false;
       }
 
       // LEFT-Bewegung (Pfeil-Links oder A-Taste)
       if (this.world.keyboard.LEFT) {
         this.moveLeft();
+        this.otherDirection = true;
       }
 
       // SPRUNG (Leertaste oder Pfeil-Hoch)
@@ -451,7 +455,7 @@ export class Character extends MovableObject {
       // else {
       //   this.playAnimation(this.IMAGES_IDLE);
       // }
-    }, 1000 / 60); // 60 FPS für flüssigen Übergang
+    }, 150); // 60 FPS für flüssigen Übergang
   }
 
   // ═══════════════════════════════════════════════════════════════
