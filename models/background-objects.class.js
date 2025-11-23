@@ -11,7 +11,7 @@ export class BackgroundObjects extends MovableObject{
         this.loadImage(imagePath)
 
         this.x = x;         // dynamisch die Bewegung erstellen
-        this.y = this.screenX - this.height;  // um dynamisch die Bewegung erstellen
+        this.y = 480 - this.height;  // um dynamisch die Bewegung erstellen
     }
 
 

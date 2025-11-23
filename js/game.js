@@ -1,33 +1,16 @@
-import { World } from '../models/world.class.js';
-import { Character } from '../models/character.class.js';
-import { Chicken } from '../models/chicken.class.js';
-
-
-
-
-
-
+import { World } from "../models/world.class.js";
+import { Keyboard } from "../models/keyboard.class.js";
 
 let canvas;
-
-
+let keyboard = new Keyboard();
 let world;
 
-
-
-
 function init() {
-    canvas = document.getElementById("canvas");
-    world = new World(canvas);
-    
-    window.world = world;
-    console.log("World erstellt:", world);
+  canvas = document.getElementById("canvas");
+  world = new World(canvas, keyboard);
 
-    
-
-    
+  window.world = world;
+  console.log("World erstellt:", world);
 }
 
-
-window.addEventListener('load', init);
-  
+window.addEventListener("load", init);
