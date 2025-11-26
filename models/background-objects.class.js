@@ -4,7 +4,7 @@ import { MovableObject } from './movable-object.class.js';
 export class BackgroundObjects extends MovableObject{
 
         width = 720;   // Canvas-Breite
-        height = 400;  // Bild Höhe
+        height = 480;  // Bild Höhe
 
     constructor(imagePath, x){
         super();

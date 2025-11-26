@@ -8,7 +8,7 @@
  * 
  * @property {number} x - Horizontale Position auf dem Canvas
  * @property {number} y - Vertikale Position auf dem Canvas
- * @property {Image} img - Aktuell anzuzeigendes Bild
+ * @property {Image} img - Aktuell anzuzeigendes Bild      
  * @property {number} height - Höhe des Objekts in Pixeln
  * @property {number} width - Breite des Objekts in Pixeln
  * @property {Object} imageCache - Speicher für vorgeladene Bilder (key: Pfad, value: Image)
