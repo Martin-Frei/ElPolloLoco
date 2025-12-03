@@ -1,15 +1,21 @@
 export class Level {
-  clouds;
-  backgroundObjects;
-  enemies;
-  endboss;
-
-  constructor(enemies, clouds, backgroundObjects, endboss){
-    this.enemies = enemies;
-    this.clouds = clouds;
-    this.backgroundObjects = backgroundObjects;
-    this.endboss = endboss;
-    this.levelEnd_x = 2500;
-    this.levelStart_x = -500;
-  }
+    enemies;
+    clouds;
+    backgroundObjects;
+    endboss;
+    bottles;
+    coins;
+    levelStart_x;
+    levelEnd_x;
+    
+    constructor(enemies, clouds, backgroundObjects, endboss, bottles, coins) {
+        this.enemies = enemies;
+        this.clouds = clouds;
+        this.backgroundObjects = backgroundObjects;
+        this.endboss = endboss;
+        this.bottles = bottles;
+        this.coins = coins;
+        this.levelStart_x = -500;
+        this.levelEnd_x = 2500;
+    }
 }

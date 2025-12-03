@@ -3,7 +3,7 @@ import { MovableObject } from './movable-object.class.js';
 
 export class Air extends MovableObject{
 
-        width = 3600;   // Canvas-Breite
+        width = 4000;    // Canvas-Breite
         height = 400;  // Bild Höhe
 
     constructor(imagePath, x){

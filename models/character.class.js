@@ -1,7 +1,6 @@
 import { MovableObject } from "./movable-object.class.js";
 
 export class Character extends MovableObject {
-  
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
     "img/2_character_pepe/2_walk/W-22.png",
@@ -24,98 +23,104 @@ export class Character extends MovableObject {
   speedY = 0;
   acceleration = 1.0;
   otherDirection = false;
+  isJumping = false; // ← NEU! Property hinzufügen
 
   constructor(world) {
     super();
     this.world = world;
 
-     // DEBUG
+    // DEBUG (kannst du später löschen)
     console.log("world:", this.world);
     console.log("world.level:", this.world.level);
     console.log("levelStart_x:", this.world.level?.levelStart_x);
     console.log("levelEnd_x:", this.world.level?.levelEnd_x);
-    
+
     this.loadImage("img/2_character_pepe/2_walk/W-21.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMP);
-    
+
     this.width = 200;
     this.height = 300;
     this.x = 0;
     this.y = 140;
-    
+
     this.animate();
     this.applyGravity();
   }
 
   animate() {
-    
-    // BEWEGUNGS-LOOP (60 FPS)
+
     setInterval(() => {
-      
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
+        if (this.isAboveGround()) {
+          this.x += 2; 
+         }
         this.otherDirection = false;
       }
-      
+
       if (this.world.keyboard.LEFT) {
         this.moveLeft();
+        if (this.isAboveGround()) {
+          this.x -= 1;
+        }
         this.otherDirection = true;
       }
-      
+
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
       }
-      
-      if (this.x < this.world.levelStart_x) {
-        this.x = this.world.levelStart_x;
+
+      if (this.world.keyboard.SPACE && this.isJumping && this.speedY > 0) {
+        this.speedY += 0.4;
+        if (this.speedY > 35) {
+          this.speedY = 35;
+        }
       }
-      
-      if (this.x > this.world.levelEnd_x) {
-        this.x = this.world.levelEnd_x;
+
+      if (!this.world.keyboard.SPACE) {
+        this.isJumping = false;
       }
-      
+
+      // Grenzen
+      if (this.x < this.world.level.levelStart_x) {
+        this.x = this.world.level.levelStart_x;
+      }
+
+      if (this.x > this.world.level.levelEnd_x) {
+        this.x = this.world.level.levelEnd_x;
+      }
     }, 1000 / 60);
-    
-    
+
     // ANIMATIONS-LOOP
     setInterval(() => {
-      
       if (this.isAboveGround()) {
-        
         let jumpImage;
-        
+
         if (this.speedY > 5) {
           jumpImage = this.IMAGES_JUMP[1];
-        } 
-        else if (this.speedY > 0) {
+        } else if (this.speedY > 0) {
           jumpImage = this.IMAGES_JUMP[2];
-        }
-        else if (this.speedY > -5) {
+        } else if (this.speedY > -5) {
           jumpImage = this.IMAGES_JUMP[2];
-        }
-        else if (this.speedY >= -15) {
+        } else if (this.speedY >= -15) {
           jumpImage = this.IMAGES_JUMP[3];
-        }
-        else {
+        } else {
           jumpImage = this.IMAGES_JUMP[4];
         }
-        
+
         this.img = this.imageCache[jumpImage];
-      }
-      
-      else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
-      } 
-      else {
+      } else {
         this.img = this.imageCache[this.IMAGES_WALKING[0]];
       }
-      
     }, 150);
   }
 
   jump() {
-    this.speedY = 22;
+    this.speedY = 18;
+    this.isJumping = true;
   }
 
   applyGravity() {

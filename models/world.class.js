@@ -35,6 +35,8 @@ export class World {
     this.addToMap(this.air);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.bottles);
+    this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.level.endboss);
     this.addToMap(this.character);
