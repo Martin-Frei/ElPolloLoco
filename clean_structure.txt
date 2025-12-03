@@ -1,0 +1,30 @@
+﻿portfolio/
+│
+│
+├── img/
+│   ├── 1_editables/
+│   ├── 2_character_pepe/
+│   ├── 3_enemies_chicken/
+│   ├── 4_enemie_boss_chicken/
+│   ├── 5_background/
+│   ├── 6_salsa_bottle/
+│   ├── 7_statusbars/
+│   ├── 8_coin/
+│   ├── 9_intro_outro_screens/
+│   └── You won, you lost/
+├── js/
+│   └── game.js
+├── levels/
+│   ├── level1.js
+│   └── level2.js
+└── models/
+    ├── air.class.js
+    ├── background-objects.class.js
+    ├── character.class.js
+    ├── chicken.class.js
+    ├── cloud.class.js
+    ├── endboss.class.js
+    ├── keyboard.class.js
+    ├── level.class.js
+    ├── movable-object.class.js
+    └── world.class.js

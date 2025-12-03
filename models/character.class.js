@@ -28,6 +28,12 @@ export class Character extends MovableObject {
   constructor(world) {
     super();
     this.world = world;
+
+     // DEBUG
+    console.log("world:", this.world);
+    console.log("world.level:", this.world.level);
+    console.log("levelStart_x:", this.world.level?.levelStart_x);
+    console.log("levelEnd_x:", this.world.level?.levelEnd_x);
     
     this.loadImage("img/2_character_pepe/2_walk/W-21.png");
     this.loadImages(this.IMAGES_WALKING);
@@ -61,12 +67,12 @@ export class Character extends MovableObject {
         this.jump();
       }
       
-      if (this.x < 0) {
-        this.x = 0;
+      if (this.x < this.world.levelStart_x) {
+        this.x = this.world.levelStart_x;
       }
       
-      if (this.x > 2160 - this.width) {
-        this.x = 2160- this.width;
+      if (this.x > this.world.levelEnd_x) {
+        this.x = this.world.levelEnd_x;
       }
       
     }, 1000 / 60);
