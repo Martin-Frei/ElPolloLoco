@@ -1,6 +1,5 @@
 import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
-import { Endboss } from "./endboss.class.js";
 import { level1 } from "../levels/level1.js";
 
 export class World {
@@ -11,7 +10,6 @@ export class World {
 
   level = level1;
 
-  endboss = new Endboss();
   air = new Air("img/5_background/layers/air.png");
   character;
 
@@ -38,7 +36,7 @@ export class World {
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
-    this.addToMap(this.endboss);
+    this.addToMap(this.level.endboss);
     this.addToMap(this.character);
 
     this.ctx.translate(-this.camera_x, 0);

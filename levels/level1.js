@@ -2,6 +2,7 @@ import { Level } from '../models/level.class.js';
 import { Chicken } from '../models/chicken.class.js';
 import { Cloud } from '../models/cloud.class.js';
 import { BackgroundObjects } from '../models/background-objects.class.js';
+import { Endboss } from '../models/endboss.class.js';
 
 
 
@@ -73,5 +74,6 @@ export const level1 = new Level(
       new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719*4),
       new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719*4),
       new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719*4),
-  ]
+  ],
+    new Endboss()
 );
