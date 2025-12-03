@@ -1,0 +1,39 @@
+# Editables (Design-Dateien)
+img/1_editables/
+
+# Preview GIFs
+*.gif
+
+# Übersichtsbilder
+img/**/Pepe.png
+img/**/*Versión*.png
+img/**/*muestra*.png
+img/**/Señora_gallina.png
+img/5_background/complete_background.png
+img/5_background/first_half_background.png
+img/5_background/second_half_background.png
+img/5_background/layers/*/full.png
+img/6_salsa_bottle/salsa_bottle.png
+img/7_statusbars/all_statusbars.png
+img/7_statusbars/example_*.png
+
+# Font Archive
+*.zip
+
+# Temporary files
+clean_structure.txt
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node (falls später gebraucht)
+node_modules/
+
+# Build
+dist/
+build/
