@@ -1,3 +1,5 @@
+// models\world.class.js
+
 import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
 import { level1 } from "../levels/level1.js";
@@ -12,8 +14,8 @@ export class World {
 
   air = new Air("img/5_background/layers/air.png");
   character;
-  
-  debugMode = true;  // Debug-Boxen an/aus
+
+  debugMode = true; // Debug-Boxen an/aus
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -21,6 +23,7 @@ export class World {
     this.keyboard = keyboard;
     this.character = new Character(this);
     this.draw();
+    this.run();
   }
 
   draw() {
@@ -42,7 +45,7 @@ export class World {
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.level.endboss);
     this.addToMap(this.character);
-    
+
     // Debug-Boxen
     if (this.debugMode) {
       this.drawCollisionBoxes();
@@ -52,36 +55,40 @@ export class World {
 
     requestAnimationFrame(() => this.draw());
   }
-  
-  // Kollisions-Boxen 
+
+  // Kollisions-Boxen
   drawCollisionBoxes() {
-    // Pepe (Grün)
-    this.drawBox(this.character, 'lime');
-    
-    // Flaschen (Blau)
-    this.level.bottles.forEach(bottle => {
-      this.drawBox(bottle, 'blue');
+    this.drawBox(this.character, "lime");
+
+    this.level.bottles.forEach((bottle) => {
+      this.drawBox(bottle, "blue");
     });
-    
-    // Münzen (Gelb)
-    this.level.coins.forEach(coin => {
-      this.drawBox(coin, 'yellow');
+
+    this.level.coins.forEach((coin) => {
+      this.drawBox(coin, "yellow");
     });
-    
-    // Hühner (Rot)
-    this.level.enemies.forEach(enemy => {
-      this.drawBox(enemy, 'red');
+
+    // Hühner: Nur lebendige mit roter Box
+    this.level.enemies.forEach((enemy) => {
+      if (!enemy.isDead) {
+        // ← NEU: Nur wenn lebendig
+        this.drawBox(enemy, "red");
+      }
     });
-    
-    // Endboss (Magenta)
-    this.drawBox(this.level.endboss, 'magenta');
+
+    this.drawBox(this.level.endboss, "magenta");
   }
-  
+
   // Einzelne Box
   drawBox(obj, color) {
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = 3;
-    this.ctx.strokeRect(obj.x, obj.y, obj.width, obj.height);
+    this.ctx.strokeRect(
+      obj.x + obj.offsetX,
+      obj.y + obj.offsetY,
+      obj.width - obj.offsetWidth,
+      obj.height - obj.offsetHeight
+    );
   }
 
   addObjectsToMap(objects) {
@@ -112,5 +119,92 @@ export class World {
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.ctx.restore();
+  }
+
+  run() {
+    setInterval(() => {
+      this.checkCollisions();
+    }, 1000 / 60);
+  }
+
+  checkCollisions() {
+    this.checkBottleCollisions();
+    this.checkCoinCollisions();
+    this.checkEnemyCollisions();
+    this.checkEndbossCollision();
+  }
+
+  checkBottleCollisions() {
+    this.level.bottles = this.level.bottles.filter((bottle) => {
+      if (this.character.isColliding(bottle)) {
+        console.log(
+          "🍾 Flasche gesammelt! Noch",
+          this.level.bottles.length - 1,
+          "übrig"
+        );
+        return false;
+      }
+      return true;
+    });
+  }
+
+  checkCoinCollisions() {
+    this.level.coins = this.level.coins.filter((coin) => {
+      if (this.character.isColliding(coin)) {
+        console.log(
+          "Münze gesammelt! Noch",
+          this.level.coins.length - 1,
+          "übrig"
+        );
+        return false;
+      }
+      return true;
+    });
+  }
+
+  checkEnemyCollisions() {
+    this.level.enemies.forEach((enemy, index) => {
+      if (this.character.isColliding(enemy) && !enemy.isDead) {
+        let pepeBottom =
+          this.character.y +
+          this.character.height -
+          this.character.offsetHeight;
+        let enemyTop = enemy.y + enemy.offsetY;
+
+        // Alle 3 Bedingungen müssen erfüllt sein:
+        // 1. Füße über Kopf
+        // 2. Schnell fallend
+        // 3. In der Luft
+
+        if (
+          pepeBottom < enemyTop + 30 &&
+          this.character.speedY < -5 &&
+          this.character.isAboveGround()
+        ) {
+          console.log("🦘 Huhn platt!");
+          this.character.jump();
+
+          enemy.die();
+          setTimeout(() => {
+            this.level.enemies.splice(index, 1);
+          }, 500);
+        } else {
+          console.log("💔 Huhn von Seite berührt!");
+          this.character.hit();
+        }
+      }
+    });
+  }
+
+  checkEndbossCollision() {
+    let distance = Math.abs(this.character.x - this.level.endboss.x);
+
+    if (distance < 150) {
+      console.log("🦖 Abstand zum Endboss:", distance.toFixed(0));
+    }
+
+    if (this.character.isColliding(this.level.endboss)) {
+      console.log("🦖🦖🦖 ENDBOSS BERÜHRT! 🦖🦖🦖");
+    }
   }
 }

@@ -1,3 +1,6 @@
+// models\level.class.js
+
+
 export class Level {
     enemies;
     clouds;
@@ -15,7 +18,7 @@ export class Level {
         this.endboss = endboss;
         this.bottles = bottles;
         this.coins = coins;
-        this.levelStart_x = 0;
+        this.levelStart_x = -100;
         this.levelEnd_x = 2500;
     }
 }                

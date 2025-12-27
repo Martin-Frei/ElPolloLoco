@@ -1,3 +1,6 @@
+// models\movable-object.class.js
+
+
 /**
  * Basis-Klasse für alle beweglichen Objekte im Spiel
  * 
@@ -19,64 +22,32 @@
  * @version 1.1.0
  * @since 2025-01-13
  */
+
+
 export class MovableObject {
   
-  /** Horizontale Position (X-Koordinate) auf dem Canvas */
-  x = 120;
-  
-  /** Vertikale Position (Y-Koordinate) auf dem Canvas */
+    x = 120;
   y = 250;
-  
-  /** Aktuell anzuzeigendes Bild-Objekt */
   img;
-  
-  /** Höhe des Objekts in Pixeln */
   height = 150;
-  
-  /** Breite des Objekts in Pixeln */
   width = 100;
-  
-  /** Cache-Objekt für vorgeladene Bilder (Performance-Optimierung) */
   imageCache = {};
-  
-  /** Index des aktuellen Animations-Frames (für playAnimation) */
   currentImage = 0;
-  
-  /** Bewegungsgeschwindigkeit in Pixeln pro Frame */
   speed = 5;
+  
+  // NEU: Hitbox-Offsets
+  offsetX = 0;
+  offsetY = 0;
+  offsetWidth = 0;
+  offsetHeight = 0;
 
-  /**
-   * Lädt ein einzelnes Bild und setzt es als aktuelles Bild
-   * 
-   * @method loadImage
-   * @param {string} path - Dateipfad zum Bild (z.B. 'img/character.png')
-   * @description Erstellt ein neues Image-Objekt und lädt das Bild vom angegebenen Pfad.
-   * Das geladene Bild wird als this.img gespeichert und kann mit drawImage() gezeichnet werden.
-   * 
-   * @example
-   * this.loadImage('img/2_character_pepe/2_walk/W-21.png');
-   */
+
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
-  /**
-   * Lädt mehrere Bilder und speichert sie im imageCache
-   * 
-   * @method loadImages
-   * @param {string[]} arr - Array mit Dateipfaden zu den Bildern
-   * @description Lädt alle Bilder aus dem Array vor und speichert sie im imageCache.
-   * Wird für Animationen verwendet, damit Bilder nicht bei jedem Frame neu geladen werden.
-   * Verbessert Performance erheblich!
-   * 
-   * @example
-   * this.loadImages([
-   *     'img/character/walk1.png',
-   *     'img/character/walk2.png',
-   *     'img/character/walk3.png'
-   * ]);
-   */
+ 
   loadImages(arr) {
     arr.forEach((path) => {
         let img = new Image();
@@ -237,4 +208,15 @@ export class MovableObject {
   moveLeft() {
     this.x -= this.speed;
   }
+
+   /**
+   * Prüft ob dieses Objekt mit einem anderen kollidiert (AABB)
+   */
+isColliding(obj) {
+  return this.x + this.offsetX + this.width - this.offsetWidth > obj.x + obj.offsetX &&
+         this.x + this.offsetX < obj.x + obj.width - obj.offsetWidth &&  // ← obj.width hinzugefügt!
+         this.y + this.offsetY + this.height - this.offsetHeight > obj.y + obj.offsetY &&
+         this.y + this.offsetY < obj.y + obj.height - obj.offsetHeight;  // ← obj.height hinzugefügt!
+}
+
 }

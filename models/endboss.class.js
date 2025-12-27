@@ -1,3 +1,6 @@
+// models\endboss.class.js
+
+
 import { MovableObject } from './movable-object.class.js';
 
 export class Endboss extends MovableObject {
@@ -6,7 +9,14 @@ export class Endboss extends MovableObject {
     height = 400;
     y = 55;
     health = 100;
-    
+
+    // Hitbox individuell verkleinern
+    offsetX = 30; 
+    offsetY = 80;
+    offsetWidth = 30;  
+    offsetHeight = 100; 
+
+
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
         'img/4_enemie_boss_chicken/1_walk/G2.png',

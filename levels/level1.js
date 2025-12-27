@@ -1,3 +1,5 @@
+// levels\level1.js
+
 import { Level } from "../models/level.class.js";
 import { Chicken } from "../models/chicken.class.js";
 import { Cloud } from "../models/cloud.class.js";
@@ -223,8 +225,8 @@ export const level1 = new Level(
   ],
   new Endboss(),
   [
-    new Bottle(-400, 360),
-    new Bottle(-150, 360),
+    new Bottle(-53, 150),
+    new Bottle(-53, 100),
     new Bottle(200, 360),
     new Bottle(450, 250),
     new Bottle(650, 360),

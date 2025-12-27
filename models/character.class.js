@@ -1,3 +1,5 @@
+// models\character.class.js
+
 import { MovableObject } from "./movable-object.class.js";
 
 export class Character extends MovableObject {
@@ -23,13 +25,16 @@ export class Character extends MovableObject {
   speedY = 0;
   acceleration = 1.0;
   otherDirection = false;
-  isJumping = false; // ← NEU! Property hinzufügen
+  isJumping = false;
+
+  health = 100;
+  lastHit = 0;
 
   constructor(world) {
     super();
     this.world = world;
 
-    // DEBUG (kannst du später löschen)
+    // DEBUG (später löschen)
     console.log("world:", this.world);
     console.log("world.level:", this.world.level);
     console.log("levelStart_x:", this.world.level?.levelStart_x);
@@ -44,18 +49,23 @@ export class Character extends MovableObject {
     this.x = 0;
     this.y = 140;
 
+    // Hitbox individuell verkleinern
+    this.offsetX = 30;
+    this.offsetY = 115;
+    this.offsetWidth = 80 ;
+    this.offsetHeight = 115;
+
     this.animate();
     this.applyGravity();
   }
 
   animate() {
-
     setInterval(() => {
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
         if (this.isAboveGround()) {
-          this.x += 2; 
-         }
+          this.x += 2;
+        }
         this.otherDirection = false;
       }
 
@@ -134,5 +144,21 @@ export class Character extends MovableObject {
 
   isAboveGround() {
     return this.y < 140;
+  }
+
+   hit() {
+    let now = Date.now();
+    
+    // Cooldown: Nur alle 1 Sekunde Schaden nehmen
+    if (now - this.lastHit > 1000) {
+      this.health -= 10;
+      this.lastHit = now;
+      console.log('💔 Pepe verliert 10 Leben! Noch', this.health, 'übrig');
+      
+      if (this.health <= 0) {
+        this.health = 0;
+        console.log('💀 GAME OVER!');
+      }
+    }
   }
 }
