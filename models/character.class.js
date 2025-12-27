@@ -1,6 +1,7 @@
 // models\character.class.js
 
 import { MovableObject } from "./movable-object.class.js";
+import { ThrownBottle } from "./thrown-bottle.class.js"; 
 
 export class Character extends MovableObject {
   IMAGES_WALKING = [
@@ -22,13 +23,12 @@ export class Character extends MovableObject {
 
   world;
   speed = 3;
-  speedY = 0;
-  acceleration = 1.0;
   otherDirection = false;
   isJumping = false;
 
   health = 100;
   lastHit = 0;
+  lastThrow = 0;
 
   constructor(world) {
     super();
@@ -61,6 +61,7 @@ export class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
+
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
         if (this.isAboveGround()) {
@@ -68,6 +69,7 @@ export class Character extends MovableObject {
         }
         this.otherDirection = false;
       }
+
 
       if (this.world.keyboard.LEFT) {
         this.moveLeft();
@@ -81,6 +83,7 @@ export class Character extends MovableObject {
         this.jump();
       }
 
+
       if (this.world.keyboard.SPACE && this.isJumping && this.speedY > 0) {
         this.speedY += 0.4;
         if (this.speedY > 35) {
@@ -90,6 +93,10 @@ export class Character extends MovableObject {
 
       if (!this.world.keyboard.SPACE) {
         this.isJumping = false;
+      }
+
+      if (this.world.keyboard.D) {
+        this.throwBottle();
       }
 
       // Grenzen
@@ -133,15 +140,6 @@ export class Character extends MovableObject {
     this.isJumping = true;
   }
 
-  applyGravity() {
-    setInterval(() => {
-      if (this.isAboveGround() || this.speedY > 0) {
-        this.y -= this.speedY;
-        this.speedY -= this.acceleration;
-      }
-    }, 1000 / 60);
-  }
-
   isAboveGround() {
     return this.y < 140;
   }
@@ -161,4 +159,21 @@ export class Character extends MovableObject {
       }
     }
   }
+
+  throwBottle() {
+    let now = Date.now();
+    
+    if (now - this.lastThrow > 500) { //Cooldown alle 0,5 sec einen wurf
+      console.log('🍾 Flasche geworfen!');
+      
+      let bottle = new ThrownBottle(
+        this.x,              // Pepe's X-Position
+        this.y,              // Pepe's Y-Position
+        this.otherDirection  // Blickrichtung (true=links, false=rechts)
+      );
+      
+      this.world.thrownBottles.push(bottle);
+      this.lastThrow = now;
+    }
+}
 }

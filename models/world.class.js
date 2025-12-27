@@ -3,6 +3,7 @@
 import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
 import { level1 } from "../levels/level1.js";
+import { ThrownBottle } from "./thrown-bottle.class.js";
 
 export class World {
   canvas;
@@ -11,6 +12,7 @@ export class World {
   camera_x = 0;
 
   level = level1;
+  thrownBottles = [];
 
   air = new Air("img/5_background/layers/air.png");
   character;
@@ -22,6 +24,7 @@ export class World {
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.character = new Character(this);
+    this.level.endboss.world = this;
     this.draw();
     this.run();
   }
@@ -44,6 +47,8 @@ export class World {
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.level.endboss);
+    this.addObjectsToMap(this.thrownBottles);
+    this.addObjectsToMap(this.thrownBottles.filter((b) => !b.readyToRemove));
     this.addToMap(this.character);
 
     // Debug-Boxen
@@ -71,12 +76,17 @@ export class World {
     // Hühner: Nur lebendige mit roter Box
     this.level.enemies.forEach((enemy) => {
       if (!enemy.isDead) {
-        // ← NEU: Nur wenn lebendig
         this.drawBox(enemy, "red");
       }
     });
 
     this.drawBox(this.level.endboss, "magenta");
+
+    this.thrownBottles.forEach((bottle) => {
+      if (!bottle.readyToRemove) {
+        this.drawBox(bottle, "cyan");
+      }
+    });
   }
 
   // Einzelne Box
@@ -132,6 +142,7 @@ export class World {
     this.checkCoinCollisions();
     this.checkEnemyCollisions();
     this.checkEndbossCollision();
+    this.checkThrownBottleCollisions();
   }
 
   checkBottleCollisions() {
@@ -181,7 +192,7 @@ export class World {
           this.character.speedY < -5 &&
           this.character.isAboveGround()
         ) {
-          console.log("🦘 Huhn platt!");
+          console.log("Huhn platt!");
           this.character.jump();
 
           enemy.die();
@@ -189,7 +200,7 @@ export class World {
             this.level.enemies.splice(index, 1);
           }, 500);
         } else {
-          console.log("💔 Huhn von Seite berührt!");
+          console.log("Huhn von Seite berührt!");
           this.character.hit();
         }
       }
@@ -207,4 +218,75 @@ export class World {
       console.log("🦖🦖🦖 ENDBOSS BERÜHRT! 🦖🦖🦖");
     }
   }
+
+  // Prüft ob geworfene Flaschen Gegner treffen
+checkThrownBottleCollisions() {
+    this.thrownBottles.forEach(bottle => {
+        if (bottle.readyToRemove) return;  // Ignoriere Flaschen die schon am Verschwinden sind
+        
+        // Check gegen Hühner
+        this.checkBottleVsEnemies(bottle);
+        
+        // Check gegen Endboss
+        this.checkBottleVsEndboss(bottle);
+    });
+}
+
+// Flasche trifft Huhn
+checkBottleVsEnemies(bottle) {
+    this.level.enemies.forEach((enemy, index) => {
+        if (!enemy.isDead && bottle.isColliding(enemy)) {
+            console.log('💥 Flasche trifft Huhn!');
+            
+            // Huhn stirbt
+            enemy.die();
+            setTimeout(() => {
+                this.level.enemies.splice(index, 1);
+            }, 500);
+            
+            // Flasche zerschellt
+            bottle.splash();
+        }
+    });
+}
+
+// Flasche trifft Endboss
+checkBottleVsEndboss(bottle) {
+    if (bottle.isColliding(this.level.endboss)) {
+        console.log('💥 Flasche trifft Endboss!');
+        
+        // Endboss verliert Leben
+        this.level.endboss.hit();
+        
+        // Flasche zerschellt
+        bottle.splash();
+    }
+}
+
+  cleanupBottles() {
+    this.thrownBottles = this.thrownBottles.filter(
+      (bottle) => !bottle.readyToRemove
+    );
+  }
+
+  checkBottleVsEnemies(bottle) {
+    this.level.enemies.forEach((enemy, index) => {
+        if (!enemy.isDead) {
+            bottle.hitsTarget(enemy, () => {
+                console.log('💥 Flasche trifft Huhn!');
+                enemy.die();
+                setTimeout(() => {
+                    this.level.enemies.splice(index, 1);
+                }, 500);
+            });
+        }
+    });
+}
+
+checkBottleVsEndboss(bottle) {
+    bottle.hitsTarget(this.level.endboss, () => {
+        console.log('💥 Flasche trifft Endboss!');
+        this.level.endboss.hit();
+    });
+}
 }

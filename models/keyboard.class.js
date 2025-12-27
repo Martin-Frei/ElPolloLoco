@@ -16,16 +16,14 @@ export class Keyboard {
         
         window.addEventListener('keydown', (event) => {
             
-            // RECHTS (Pfeil-Rechts ODER D)
+            // RECHTS (Pfeil-Rechts)
             if (event.key === 'ArrowRight') this.RIGHT = true;
             
-            // LINKS (Pfeil-Links ODER A)
+            // LINKS (Pfeil-Links)
             if (event.key === 'ArrowLeft') this.LEFT = true;
-            if (event.key === 'a' || event.key === 'A') this.LEFT = true;
             
-            // OBEN (Pfeil-Hoch ODER W)
+            // OBEN (Pfeil-Hoch)
             if (event.key === 'ArrowUp') this.UP = true;
-            if (event.key === 'w' || event.key === 'W') this.UP = true;
             
             // LEERTASTE
             if (event.key === ' ') this.SPACE = true;
@@ -38,14 +36,12 @@ export class Keyboard {
             
             // RECHTS
             if (event.key === 'ArrowRight') this.RIGHT = false;
-            
+        
             // LINKS
             if (event.key === 'ArrowLeft') this.LEFT = false;
-            if (event.key === 'a' || event.key === 'A') this.LEFT = false;
             
             // OBEN
             if (event.key === 'ArrowUp') this.UP = false;
-            if (event.key === 'w' || event.key === 'W') this.UP = false;
             
             // LEERTASTE
             if (event.key === ' ') this.SPACE = false;

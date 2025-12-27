@@ -1,7 +1,9 @@
-// models\endboss.class.js
+// models/endboss.class.js
+
+import { MovableObject } from './movable-object.class.js'; 
 
 
-import { MovableObject } from './movable-object.class.js';
+
 
 export class Endboss extends MovableObject {
     
@@ -9,14 +11,14 @@ export class Endboss extends MovableObject {
     height = 400;
     y = 55;
     health = 100;
-
-    // Hitbox individuell verkleinern
-    offsetX = 30; 
+    
+    hasBeenAlerted = false; 
+    
+    offsetX = 30;
     offsetY = 80;
-    offsetWidth = 30;  
-    offsetHeight = 100; 
-
-
+    offsetWidth = 30;
+    offsetHeight = 30;
+    
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
         'img/4_enemie_boss_chicken/1_walk/G2.png',
@@ -88,10 +90,49 @@ export class Endboss extends MovableObject {
             else if (this.isHurt()) {
                 this.playAnimation(this.IMAGES_HURT);
             }
+            else if (this.isAttacking()) {
+                this.playAnimation(this.IMAGES_ATTACK);
+            }
+            else if (this.isAlert()) {
+                this.playAlertOnce();
+            }
             else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-        }, 400);
+        }, 200);  // Schneller für Attack
+    }
+    
+    // nah genug für Alert
+    isAlert() {
+        let distance = this.getDistanceToCharacter();
+        return distance < 500 && !this.hasBeenAlerted;
+    }
+    
+    // Attack-Range
+    isAttacking() {
+        let distance = this.getDistanceToCharacter();
+        return distance < 300;
+    }
+    
+    // Berechnet Abstand zu Pepe
+    getDistanceToCharacter() {
+        if (!this.world || !this.world.character) return 999999;
+        return Math.abs(this.x - this.world.character.x);
+    }
+    
+    // Spielt Alert
+    playAlertOnce() {
+        this.hasBeenAlerted = true;
+        
+        let alertFrame = 0;
+        let alertInterval = setInterval(() => {
+            if (alertFrame < this.IMAGES_ALERT.length) {
+                this.img = this.imageCache[this.IMAGES_ALERT[alertFrame]];
+                alertFrame++;
+            } else {
+                clearInterval(alertInterval);
+            }
+        }, 200);
     }
     
     isDead() {
@@ -119,8 +160,11 @@ export class Endboss extends MovableObject {
     
     hit() {
         this.health -= 10;
-        if (this.health < 0) {
+        console.log('💥 Endboss getroffen! Noch', this.health, 'Leben');
+        
+        if (this.health <= 0) {
             this.health = 0;
+            console.log('🎉 ENDBOSS BESIEGT!');
         }
     }
 }
