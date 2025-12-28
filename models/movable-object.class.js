@@ -40,6 +40,8 @@ export class MovableObject {
   offsetWidth = 0;
   offsetHeight = 0;
 
+  gravityInterval = null; 
+
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
@@ -221,7 +223,7 @@ export class MovableObject {
   }
 
   applyGravity() {
-    this.garvityInterval = setInterval(() => {
+    this.gravityInterval = setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;

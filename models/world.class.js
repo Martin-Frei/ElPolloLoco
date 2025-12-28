@@ -4,6 +4,7 @@ import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
 import { level1 } from "../levels/level1.js";
 import { ThrownBottle } from "./thrown-bottle.class.js";
+import { Statusbar } from "./statusbar.class.js";
 
 export class World {
   canvas;
@@ -17,6 +18,12 @@ export class World {
   air = new Air("img/5_background/layers/air.png");
   character;
 
+  healthBar;
+  bottleBar;
+  coinBar;
+  endbossBar;
+  collectedCoins = 0;
+
   debugMode = true; // Debug-Boxen an/aus
 
   constructor(canvas, keyboard) {
@@ -25,6 +32,8 @@ export class World {
     this.keyboard = keyboard;
     this.character = new Character(this);
     this.level.endboss.world = this;
+    this.createStatusbars();
+
     this.draw();
     this.run();
   }
@@ -38,6 +47,7 @@ export class World {
       this.camera_x = 0;
     }
 
+    // ═══ KAMERA BEWEGT SICH ═══
     this.ctx.translate(this.camera_x, 0);
 
     this.addToMap(this.air);
@@ -56,7 +66,10 @@ export class World {
       this.drawCollisionBoxes();
     }
 
+    // ═══ KAMERA ZURÜCK ═══
     this.ctx.translate(-this.camera_x, 0);
+
+    this.drawStatusbars();
 
     requestAnimationFrame(() => this.draw());
   }
@@ -148,11 +161,8 @@ export class World {
   checkBottleCollisions() {
     this.level.bottles = this.level.bottles.filter((bottle) => {
       if (this.character.isColliding(bottle)) {
-        console.log(
-          "🍾 Flasche gesammelt! Noch",
-          this.level.bottles.length - 1,
-          "übrig"
-        );
+        this.character.bottleInventory++;  
+        console.log("🍾 Flasche gesammelt! Noch", this.level.bottles.length - 1, "übrig");
         return false;
       }
       return true;
@@ -167,6 +177,7 @@ export class World {
           this.level.coins.length - 1,
           "übrig"
         );
+        this.collectedCoins++;
         return false;
       }
       return true;
@@ -220,48 +231,48 @@ export class World {
   }
 
   // Prüft ob geworfene Flaschen Gegner treffen
-checkThrownBottleCollisions() {
-    this.thrownBottles.forEach(bottle => {
-        if (bottle.readyToRemove) return;  // Ignoriere Flaschen die schon am Verschwinden sind
-        
-        // Check gegen Hühner
-        this.checkBottleVsEnemies(bottle);
-        
-        // Check gegen Endboss
-        this.checkBottleVsEndboss(bottle);
-    });
-}
+  checkThrownBottleCollisions() {
+    this.thrownBottles.forEach((bottle) => {
+      if (bottle.readyToRemove) return; // Ignoriere Flaschen die schon am Verschwinden sind
 
-// Flasche trifft Huhn
-checkBottleVsEnemies(bottle) {
+      // Check gegen Hühner
+      this.checkBottleVsEnemies(bottle);
+
+      // Check gegen Endboss
+      this.checkBottleVsEndboss(bottle);
+    });
+  }
+
+  // Flasche trifft Huhn
+  checkBottleVsEnemies(bottle) {
     this.level.enemies.forEach((enemy, index) => {
-        if (!enemy.isDead && bottle.isColliding(enemy)) {
-            console.log('💥 Flasche trifft Huhn!');
-            
-            // Huhn stirbt
-            enemy.die();
-            setTimeout(() => {
-                this.level.enemies.splice(index, 1);
-            }, 500);
-            
-            // Flasche zerschellt
-            bottle.splash();
-        }
-    });
-}
+      if (!enemy.isDead && bottle.isColliding(enemy)) {
+        console.log("💥 Flasche trifft Huhn!");
 
-// Flasche trifft Endboss
-checkBottleVsEndboss(bottle) {
-    if (bottle.isColliding(this.level.endboss)) {
-        console.log('💥 Flasche trifft Endboss!');
-        
-        // Endboss verliert Leben
-        this.level.endboss.hit();
-        
+        // Huhn stirbt
+        enemy.die();
+        setTimeout(() => {
+          this.level.enemies.splice(index, 1);
+        }, 500);
+
         // Flasche zerschellt
         bottle.splash();
+      }
+    });
+  }
+
+  // Flasche trifft Endboss
+  checkBottleVsEndboss(bottle) {
+    if (bottle.isColliding(this.level.endboss)) {
+      console.log("💥 Flasche trifft Endboss!");
+
+      // Endboss verliert Leben
+      this.level.endboss.hit();
+
+      // Flasche zerschellt
+      bottle.splash();
     }
-}
+  }
 
   cleanupBottles() {
     this.thrownBottles = this.thrownBottles.filter(
@@ -271,22 +282,77 @@ checkBottleVsEndboss(bottle) {
 
   checkBottleVsEnemies(bottle) {
     this.level.enemies.forEach((enemy, index) => {
-        if (!enemy.isDead) {
-            bottle.hitsTarget(enemy, () => {
-                console.log('💥 Flasche trifft Huhn!');
-                enemy.die();
-                setTimeout(() => {
-                    this.level.enemies.splice(index, 1);
-                }, 500);
-            });
-        }
+      if (!enemy.isDead) {
+        bottle.hitsTarget(enemy, () => {
+          console.log("💥 Flasche trifft Huhn!");
+          enemy.die();
+          setTimeout(() => {
+            this.level.enemies.splice(index, 1);
+          }, 500);
+        });
+      }
     });
-}
+  }
 
-checkBottleVsEndboss(bottle) {
+  checkBottleVsEndboss(bottle) {
     bottle.hitsTarget(this.level.endboss, () => {
-        console.log('💥 Flasche trifft Endboss!');
-        this.level.endboss.hit();
+      console.log("💥 Flasche trifft Endboss!");
+      this.level.endboss.hit();
     });
-}
+  }
+
+  createStatusbars() {
+    this.healthBar = new Statusbar(10, 10, "health");
+    this.bottleBar = new Statusbar(10, 50, "bottles");
+    this.coinBar = new Statusbar(10, 90, "coins");
+    this.endbossBar = new Statusbar(500, 10, "endboss");
+  }
+
+  drawStatusbars() {
+    // Aktualisiere Werte
+    this.healthBar.setValue(this.character.health, 100);
+    this.bottleBar.setValue(this.character.bottleInventory || 0, 5);
+    this.coinBar.setValue(
+      this.collectedCoins,
+      this.level.coins.length + this.collectedCoins
+    );
+    this.endbossBar.setValue(this.level.endboss.health, 100);
+
+    // Zeichne Health Bar
+    this.addToMap(this.healthBar);
+    this.drawStatusbarText(this.healthBar.getText(), 170, 30);
+
+    // Zeichne Bottle Bar
+    this.addToMap(this.bottleBar);
+    this.drawStatusbarText(this.bottleBar.getText(), 170, 70);
+
+    // Zeichne Coin Bar
+    this.addToMap(this.coinBar);
+    this.drawStatusbarText(this.coinBar.getText(), 170, 110);
+
+    // Zeichne Endboss Bar (nur wenn nahe)
+    if (this.isEndbossNear()) {
+      this.addToMap(this.endbossBar);
+      this.drawStatusbarText(this.endbossBar.getText(), 660, 30);
+    }
+  }
+
+  isEndbossNear() {
+    let distance = Math.abs(this.character.x - this.level.endboss.x);
+    return distance < 600; // Zeige Bar wenn < 600px entfernt
+  }
+
+  // Zeichnet Text auf Canvas
+  drawStatusbarText(text, x, y) {
+    this.ctx.font = "bold 20px Arial";
+    this.ctx.fillStyle = "#fff";
+    this.ctx.strokeStyle = "#000";
+    this.ctx.lineWidth = 3;
+
+    // Schwarzer Rand 
+    this.ctx.strokeText(text, x, y);
+
+    // Weißer Text
+    this.ctx.fillText(text, x, y);
+  }
 }

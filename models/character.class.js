@@ -1,7 +1,7 @@
 // models\character.class.js
 
 import { MovableObject } from "./movable-object.class.js";
-import { ThrownBottle } from "./thrown-bottle.class.js"; 
+import { ThrownBottle } from "./thrown-bottle.class.js";
 
 export class Character extends MovableObject {
   IMAGES_WALKING = [
@@ -29,6 +29,7 @@ export class Character extends MovableObject {
   health = 100;
   lastHit = 0;
   lastThrow = 0;
+  bottleInventory = 0;
 
   constructor(world) {
     super();
@@ -52,7 +53,7 @@ export class Character extends MovableObject {
     // Hitbox individuell verkleinern
     this.offsetX = 30;
     this.offsetY = 115;
-    this.offsetWidth = 80 ;
+    this.offsetWidth = 80;
     this.offsetHeight = 115;
 
     this.animate();
@@ -61,7 +62,6 @@ export class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
-
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
         if (this.isAboveGround()) {
@@ -69,7 +69,6 @@ export class Character extends MovableObject {
         }
         this.otherDirection = false;
       }
-
 
       if (this.world.keyboard.LEFT) {
         this.moveLeft();
@@ -82,7 +81,6 @@ export class Character extends MovableObject {
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
         this.jump();
       }
-
 
       if (this.world.keyboard.SPACE && this.isJumping && this.speedY > 0) {
         this.speedY += 0.4;
@@ -144,36 +142,43 @@ export class Character extends MovableObject {
     return this.y < 140;
   }
 
-   hit() {
+  hit() {
     let now = Date.now();
-    
+
     // Cooldown: Nur alle 1 Sekunde Schaden nehmen
     if (now - this.lastHit > 1000) {
       this.health -= 10;
       this.lastHit = now;
-      console.log('💔 Pepe verliert 10 Leben! Noch', this.health, 'übrig');
-      
+      console.log("💔 Pepe verliert 10 Leben! Noch", this.health, "übrig");
+
       if (this.health <= 0) {
         this.health = 0;
-        console.log('💀 GAME OVER!');
+        console.log("💀 GAME OVER!");
       }
     }
   }
 
+  // character.class.js
+
   throwBottle() {
     let now = Date.now();
-    
-    if (now - this.lastThrow > 500) { //Cooldown alle 0,5 sec einen wurf
-      console.log('🍾 Flasche geworfen!');
-      
-      let bottle = new ThrownBottle(
-        this.x,              // Pepe's X-Position
-        this.y,              // Pepe's Y-Position
-        this.otherDirection  // Blickrichtung (true=links, false=rechts)
-      );
-      
+
+    // NEU: Prüfe erst ob Flaschen vorhanden!
+    if (this.bottleInventory <= 0) {
+      console.log("❌ Keine Flaschen mehr!");
+      return; // Abbrechen!
+    }
+
+    if (now - this.lastThrow > 500) {
+      console.log("🍾 Flasche geworfen!");
+
+      let bottle = new ThrownBottle(this.x, this.y, this.otherDirection);
+
+      bottle.world = this.world;
       this.world.thrownBottles.push(bottle);
+
+      this.bottleInventory--; // ← NEU: Inventar verringern!
       this.lastThrow = now;
     }
-}
+  }
 }
