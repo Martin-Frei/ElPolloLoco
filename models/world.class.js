@@ -2,7 +2,7 @@
 
 import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
-import { level1 } from "../levels/level1.js";
+
 import { ThrownBottle } from "./thrown-bottle.class.js";
 import { Statusbar } from "./statusbar.class.js";
 
@@ -12,7 +12,7 @@ export class World {
   keyboard;
   camera_x = 0;
 
-  level = level1;
+  level;
   thrownBottles = [];
 
   air = new Air("img/5_background/layers/air.png");
@@ -24,12 +24,16 @@ export class World {
   endbossBar;
   collectedCoins = 0;
 
+  gameWon = false;
+  gameLost = false;
+
   debugMode = true; // Debug-Boxen an/aus
 
-  constructor(canvas, keyboard) {
+  constructor(canvas, keyboard, level) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
+    this.level = level; 
     this.character = new Character(this);
     this.level.endboss.world = this;
     this.createStatusbars();
@@ -57,7 +61,6 @@ export class World {
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.level.endboss);
-    this.addObjectsToMap(this.thrownBottles);
     this.addObjectsToMap(this.thrownBottles.filter((b) => !b.readyToRemove));
     this.addToMap(this.character);
 
@@ -144,11 +147,38 @@ export class World {
     this.ctx.restore();
   }
 
-  run() {
-    setInterval(() => {
-      this.checkCollisions();
+ run() {
+    this.gameLoop = setInterval(() => {  
+      this.checkGameOver();  
+      
+      if (!this.gameWon && !this.gameLost) { 
+        this.checkCollisions();
+        this.cleanupBottles();
+      }
     }, 1000 / 60);
-  }
+}
+
+
+checkGameOver() {
+    // WIN
+    if (this.level.endboss.health <= 0 && !this.gameWon) {
+      this.gameWon = true;
+      console.log('🎉 LEVEL GESCHAFFT!');
+      setTimeout(() => {
+        window.showWinScreen(); 
+      }, 1000);
+    }
+    
+    // LOST
+    if (this.character.health <= 0 && !this.gameLost) {
+      this.gameLost = true;
+      console.log('💀 GAME OVER!');
+      setTimeout(() => {
+        window.showLostScreen();
+      }, 1000);
+    }
+}
+
 
   checkCollisions() {
     this.checkBottleCollisions();
@@ -161,8 +191,22 @@ export class World {
   checkBottleCollisions() {
     this.level.bottles = this.level.bottles.filter((bottle) => {
       if (this.character.isColliding(bottle)) {
-        this.character.bottleInventory++;  
-        console.log("🍾 Flasche gesammelt! Noch", this.level.bottles.length - 1, "übrig");
+        if (this.character.bottleInventory >= this.level.maxBottles) {
+          // Inventar voll ?
+          console.log(
+            "🚫 Inventar voll! Max",
+            this.level.maxBottles,
+            "Flaschen"
+          );
+          return true;
+        }
+        this.character.bottleInventory++;
+        console.log(
+          "🍾 Flasche gesammelt! Inventar:",
+          this.character.bottleInventory,
+          "/",
+          this.level.maxBottles
+        );
         return false;
       }
       return true;
@@ -311,7 +355,7 @@ export class World {
   drawStatusbars() {
     // Aktualisiere Werte
     this.healthBar.setValue(this.character.health, 100);
-    this.bottleBar.setValue(this.character.bottleInventory || 0, 5);
+    this.bottleBar.setValue(this.character.bottleInventory || 0, this.level.maxBottles);
     this.coinBar.setValue(
       this.collectedCoins,
       this.level.coins.length + this.collectedCoins
@@ -349,10 +393,18 @@ export class World {
     this.ctx.strokeStyle = "#000";
     this.ctx.lineWidth = 3;
 
-    // Schwarzer Rand 
+    // Schwarzer Rand
     this.ctx.strokeText(text, x, y);
 
     // Weißer Text
     this.ctx.fillText(text, x, y);
   }
+
+    stop() {
+    if (this.gameLoop) {
+      clearInterval(this.gameLoop);
+    }
+    console.log('🛑 World gestoppt');
+  }
+  
 }

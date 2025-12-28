@@ -8,7 +8,8 @@ import { Endboss } from "../models/endboss.class.js";
 import { Bottle } from "../models/bottle.class.js";
 import { Coin } from "../models/coin.class.js";
 
-export const level1 = new Level(
+export function createLevel1() {
+  return new Level(
   [
     // Screen 1
     new Chicken("small", 0.15, 250),
@@ -278,5 +279,9 @@ export const level1 = new Level(
     new Coin(1950, 160),
 
     // ═══ BOSS-ZONE (2300+): KEINE Coins ═══
-  ]
+  ],
+
+  13  // maxBottles = 13 (unbegrenzt für Level 1)
+
 );
+}

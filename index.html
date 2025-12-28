@@ -5,13 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El Polo Loco</title>
     <link rel="stylesheet" href="style.css" />
-    <script  type="module" src="js/game.js"></script>
+    <script type="module" src="js/game.js"></script>
   </head>
 
   <body>
-    <h1>El Polo Loco</h1>
-    <canvas id="canvas" width="720" height="480"> </canvas>
-    
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen">
+      <img
+        src="img/9_intro_outro_screens/start/startscreen_1.png"
+        alt="El Pollo Loco"
+      />
+      <button id="startButton" class="game-button">START GAME</button>
+    </div>
+
+    <!-- Canvas Container (optional, für Styling) -->
+    <div id="canvasContainer">
+      <h1>El Polo Loco</h1>
+      <canvas id="canvas" width="720" height="480"></canvas>
+      <!-- ← ID hier! -->
+    </div>
+
+    <!-- NEU: Win Screen (Overlay über Canvas) -->
+    <div id="winScreen" class="screen overlay hidden">
+      <img src="img/You won, you lost/You Win A.png" alt="You Win" />
+      <div class="button-container">
+        <button id="restartButton" class="game-button">RESTART</button>
+        <button id="nextLevelButton" class="game-button">NEXT LEVEL</button>
+      </div>
+    </div>
+
+    <!-- NEU: Lost Screen -->
+    <div id="lostScreen" class="screen overlay hidden">
+      <img src="img/You won, you lost/You lost.png" alt="You Lost" />
+      <button id="restartLostButton" class="game-button">RESTART</button>
+    </div>
   </body>
 </html>
-  
