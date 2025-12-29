@@ -30,7 +30,7 @@ export class World {
   gameLost = false;
   endbossMusicStarted = false;
 
-  debugMode = true; // Debug-Boxen an/aus
+  debugMode = false; // Debug-Boxen an/aus
 
   constructor(canvas, keyboard, level) {
     this.canvas = canvas;
