@@ -8,42 +8,47 @@ import { BackgroundObjects } from "../models/background-objects.class.js";
 import { Coin } from "../models/coin.class.js";
 import { Bottle } from "../models/bottle.class.js";
 
-// ========== LEVEL 2 CONFIGURATION ==========
+// ========== LEVEL 2 CONFIGURATION - HARDCORE! ==========
 
 const LEVEL2_SPEED = {
-  chicken: 0.5,        // +66% schneller
-  chickenSmall: 0.8,   // +60% schneller
-  endboss: 0.7         // +40% schneller
+  chicken: 0.6,        // +100% schneller als Level 1! (war 0.3)
+  chickenSmall: 1.0,   // +100% schneller als Level 1! (war 0.5)
+  endboss: 0.8         // +60% schneller als Level 1! (war 0.5)
 };
 
 const LEVEL2_TIPS = [
-  "Level 2 enemies are much faster - stay alert!",
-  "Small chickens are now extremely fast!",
-  "The endboss moves faster - keep your distance",
-  "Perfect your jump timing to avoid damage",
-  "Collect coins quickly before enemies catch you",
-  "Speed is key - every second counts!",
-  "More bottles scattered - you'll need them all!",
-  "Practice makes perfect - Level 2 is the real challenge!"
+  "⚠️ WARNING: Enemies are TWICE as fast!",
+  "Small chickens move at lightning speed!",
+  "The endboss is aggressive - stay mobile!",
+  "Jump timing is CRITICAL - one mistake costs health",
+  "Collect coins FAST before enemies overwhelm you",
+  "High coins require PERFECT jumps",
+  "Save bottles - you'll need every single one!",
+  "This is the REAL challenge - stay focused!",
+  "Consider speed vs. collection - you can't get everything"
 ];
 
 export function createLevel2() {
   let enemies = [
-    // Mehr Normal Chickens!
-    new Chicken("normal", LEVEL2_SPEED.chicken, 400),
-    new Chicken("normal", LEVEL2_SPEED.chicken, 700),
-    new Chicken("normal", LEVEL2_SPEED.chicken, 1000),
+    // MEHR Normal Chickens - dichter platziert!
+    new Chicken("normal", LEVEL2_SPEED.chicken, 300),    // ← Früher!
+    new Chicken("normal", LEVEL2_SPEED.chicken, 550),    // ← Dichter!
+    new Chicken("normal", LEVEL2_SPEED.chicken, 800),
+    new Chicken("normal", LEVEL2_SPEED.chicken, 1050),   // ← Dichter!
     new Chicken("normal", LEVEL2_SPEED.chicken, 1300),
-    new Chicken("normal", LEVEL2_SPEED.chicken, 1600),
-    new Chicken("normal", LEVEL2_SPEED.chicken, 1900),
+    new Chicken("normal", LEVEL2_SPEED.chicken, 1550),   // ← Dichter!
+    new Chicken("normal", LEVEL2_SPEED.chicken, 1800),
+    new Chicken("normal", LEVEL2_SPEED.chicken, 2050),   // ← Mehr!
     
-    // Mehr Small Chickens!
-    new Chicken("small", LEVEL2_SPEED.chickenSmall, 500),
-    new Chicken("small", LEVEL2_SPEED.chickenSmall, 800),
-    new Chicken("small", LEVEL2_SPEED.chickenSmall, 1100),
+    // VIEL MEHR Small Chickens - überall!
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 400),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 650),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 900),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 1150),
     new Chicken("small", LEVEL2_SPEED.chickenSmall, 1400),
-    new Chicken("small", LEVEL2_SPEED.chickenSmall, 1700),
-    new Chicken("small", LEVEL2_SPEED.chickenSmall, 2000),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 1650),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 1900),
+    new Chicken("small", LEVEL2_SPEED.chickenSmall, 2150),  // ← Mehr!
   ];
 
   let clouds = [
@@ -53,108 +58,118 @@ export function createLevel2() {
     new Cloud(2160),
   ];
 
-  let BackgroundObjectss = [
-    // Gleiche wie Level 1...
-    new BackgroundObjects("img/5_background/layers/air.png", -719, 0),
-    new BackgroundObjects("img/5_background/layers/air.png", 0, 0),
-    new BackgroundObjects("img/5_background/layers/air.png", 719, 0),
-    new BackgroundObjects("img/5_background/layers/air.png", 719 * 2, 0),
-    new BackgroundObjects("img/5_background/layers/air.png", 719 * 3, 0),
+  let backgroundObjects = [
+    // Air
+    new BackgroundObjects("img/5_background/layers/air.png", -719),
+    new BackgroundObjects("img/5_background/layers/air.png", 0),
+    new BackgroundObjects("img/5_background/layers/air.png", 719),
+    new BackgroundObjects("img/5_background/layers/air.png", 719 * 2),
+    new BackgroundObjects("img/5_background/layers/air.png", 719 * 3),
 
-    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", -719, 0),
-    new BackgroundObjects("img/5_background/layers/3_third_layer/1.png", 0, 0),
-    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719, 0),
-    new BackgroundObjects("img/5_background/layers/3_third_layer/1.png", 719 * 2, 0),
-    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719 * 3, 0),
+    // 3rd layer
+    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", -719),
+    new BackgroundObjects("img/5_background/layers/3_third_layer/1.png", 0),
+    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719),
+    new BackgroundObjects("img/5_background/layers/3_third_layer/1.png", 719 * 2),
+    new BackgroundObjects("img/5_background/layers/3_third_layer/2.png", 719 * 3),
 
-    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", -719, 0),
-    new BackgroundObjects("img/5_background/layers/2_second_layer/1.png", 0, 0),
-    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719, 0),
-    new BackgroundObjects("img/5_background/layers/2_second_layer/1.png", 719 * 2, 0),
-    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719 * 3, 0),
+    // 2nd layer
+    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", -719),
+    new BackgroundObjects("img/5_background/layers/2_second_layer/1.png", 0),
+    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719),
+    new BackgroundObjects("img/5_background/layers/2_second_layer/1.png", 719 * 2),
+    new BackgroundObjects("img/5_background/layers/2_second_layer/2.png", 719 * 3),
 
-    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", -719, 0),
-    new BackgroundObjects("img/5_background/layers/1_first_layer/1.png", 0, 0),
-    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719, 0),
-    new BackgroundObjects("img/5_background/layers/1_first_layer/1.png", 719 * 2, 0),
-    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719 * 3, 0),
+    // 1st layer
+    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", -719),
+    new BackgroundObjects("img/5_background/layers/1_first_layer/1.png", 0),
+    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719),
+    new BackgroundObjects("img/5_background/layers/1_first_layer/1.png", 719 * 2),
+    new BackgroundObjects("img/5_background/layers/1_first_layer/2.png", 719 * 3),
   ];
 
-  let bottles = [
-    // Mehr Bottles!
-    new Bottle(100, 360),
-    new Bottle(300, 250),
-    new Bottle(500, 360),
-    new Bottle(700, 150),
-    new Bottle(900, 360),
-    new Bottle(1100, 220),
-    new Bottle(1300, 360),
-    new Bottle(1500, 180),
-    new Bottle(1700, 360),
-    new Bottle(1900, 360),
-    new Bottle(2100, 250),
-    new Bottle(2300, 360),
-  ];
+ let bottles = [
+  // Am Boden - EINFACH (5x)
+  new Bottle(200, 360),
+  new Bottle(750, 360),
+  new Bottle(1350, 360),
+  new Bottle(1900, 360),
+  new Bottle(2300, 360),  
+  
+  // In der Luft - MITTEL-SCHWER (5x)
+  new Bottle(450, 180),
+  new Bottle(1000, 120),  
+  new Bottle(1600, 150),
+  new Bottle(2050, 200), 
+  new Bottle(2200, 180),
+];
 
   let coins = [
-    // Mehr Coins! (30 total)
-    new Coin(-400, 220),
-    new Coin(-350, 200),
-    new Coin(-300, 220),
+    // MEHR Coins aber HÖHER platziert! (35 total)
     
-    new Coin(100, 180),
-    new Coin(150, 160),
-    new Coin(200, 180),
-    new Coin(400, 120),
-    new Coin(450, 100),
-    new Coin(500, 120),
+    // Start: 3 Coins - MITTEL
+    new Coin(-400, 180),     // Höher als Level 1!
+    new Coin(-350, 160),
+    new Coin(-300, 180),
     
-    new Coin(700, 200),
-    new Coin(750, 180),
-    new Coin(800, 200),
+    // Screen 1: 9 Coins - SCHWER!
+    new Coin(100, 140),      // Hoch
+    new Coin(150, 120),      // SEHR HOCH!
+    new Coin(200, 140),
+    new Coin(400, 80),       // EXTREM HOCH!
+    new Coin(450, 60),       // EXTREM HOCH!
+    new Coin(500, 80),
+    new Coin(650, 100),      // Sehr hoch
+    new Coin(700, 80),
+    new Coin(750, 100),
+    
+    // Screen 2: 9 Coins - SCHWER!
+    new Coin(900, 160),
     new Coin(950, 140),
-    new Coin(1000, 120),
-    new Coin(1050, 140),
+    new Coin(1000, 160),
+    new Coin(1100, 90),      // Sehr hoch
+    new Coin(1150, 70),      // EXTREM HOCH!
+    new Coin(1200, 90),
+    new Coin(1350, 120),
+    new Coin(1400, 100),
+    new Coin(1450, 120),
     
-    new Coin(1200, 190),
-    new Coin(1250, 170),
-    new Coin(1300, 190),
-    new Coin(1450, 110),
-    new Coin(1500, 90),
-    new Coin(1550, 110),
+    // Screen 3: 9 Coins - MITTEL-SCHWER
+    new Coin(1600, 150),
+    new Coin(1650, 130),
+    new Coin(1700, 150),
+    new Coin(1850, 110),
+    new Coin(1900, 90),
+    new Coin(1950, 110),
+    new Coin(2100, 140),
+    new Coin(2150, 120),
+    new Coin(2200, 140),
     
-    new Coin(1700, 210),
-    new Coin(1750, 190),
-    new Coin(1800, 210),
-    new Coin(1950, 150),
-    new Coin(2000, 130),
-    new Coin(2050, 150),
-    new Coin(2200, 180),
-    new Coin(2250, 160),
-    new Coin(2300, 180),
+    // Vor Endboss: 5 BONUS Coins - SEHR HOCH!
+    new Coin(2250, 80),      // Extrem hoch!
+    new Coin(2280, 60),      // EXTREM HOCH!
+    new Coin(2310, 40),      // ULTRA HOCH!
+    new Coin(2340, 60),
+    new Coin(2370, 80),
   ];
 
   let endboss = new Endboss(2400, LEVEL2_SPEED.endboss);
 
-  let levelStart_x = -719;
-  let levelEnd_x = 2300;
-  let maxBottles = 10;
-
   let level = new Level(
     enemies,
     clouds,
-    BackgroundObjects,
+    backgroundObjects,
     bottles,
     coins,
     endboss,
-    levelStart_x,
-    levelEnd_x,
-    maxBottles
+    -719,
+    2300,
+    10
   );
   
   level.tips = LEVEL2_TIPS;
   
-  console.log('📋 Level 2 created with', LEVEL2_TIPS.length, 'tips');
+  console.log('🔥 Level 2 created - HARDCORE MODE!');
   
   return level;
 }
