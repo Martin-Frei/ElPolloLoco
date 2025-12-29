@@ -5,8 +5,10 @@ import { MovableObject } from "./movable-object.class.js";
 export class Chicken extends MovableObject {
   isDead = false;
 
+  walkInterval = null;
+  animationInterval = null;
+
   constructor(type = "small", speed = 0.15, x = null) {
-    // ← x hinzugefügt!
     super();
 
     if (type === "normal") {
@@ -69,13 +71,13 @@ export class Chicken extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
+    this.walkInterval = setInterval(() => {
       if (!this.isDead) {
         this.moveLeft();
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    this.animationInterval = setInterval(() => {
       if (!this.isDead) { 
         let i = this.currentImage % this.IMAGES_WALKING.length;
         let path = this.IMAGES_WALKING[i];
@@ -91,4 +93,15 @@ export class Chicken extends MovableObject {
     this.img = new Image();
     this.img.src = this.IMAGE_DEAD;
   }
+
+  stop() {
+        if (this.walkInterval) {
+            clearInterval(this.walkInterval);
+        }
+        if (this.animationInterval) {
+            clearInterval(this.animationInterval);
+        }
+    }
+
+    
 }

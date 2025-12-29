@@ -2,6 +2,7 @@
 
 import { MovableObject } from "./movable-object.class.js";
 import { ThrownBottle } from "./thrown-bottle.class.js";
+import { AudioManager } from "../models/audio-manager.class.js";
 
 export class Character extends MovableObject {
   IMAGES_WALKING = [
@@ -74,6 +75,9 @@ export class Character extends MovableObject {
   bottleInventory = 0;
   lastMovement = 0;
 
+  movementInterval = null;
+  animationInterval = null;
+
   constructor(world) {
     super();
     this.world = world;
@@ -84,12 +88,12 @@ export class Character extends MovableObject {
     console.log("levelEnd_x:", this.world.level?.levelEnd_x);
 
     this.loadImage("img/2_character_pepe/2_walk/W-21.png");
-    
+
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_JUMP);
-    this.loadImages(this.IMAGES_HURT);    
-    this.loadImages(this.IMAGES_DEAD); 
-    this.loadImages(this.IMAGES_IDLE); 
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
+    this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
 
     this.width = 200;
@@ -103,19 +107,25 @@ export class Character extends MovableObject {
     this.offsetHeight = 115;
 
     this.lastMovement = Date.now();
-
     
-    console.log("✅ ImageCache Keys:", Object.keys(this.imageCache).length, "Bilder");
+
+    console.log(
+      "✅ ImageCache Keys:",
+      Object.keys(this.imageCache).length,
+      "Bilder"
+    );
     console.log("📋 IMAGES_IDLE definiert?", this.IMAGES_IDLE !== undefined);
-    console.log("📋 IMAGES_LONG_IDLE definiert?", this.IMAGES_LONG_IDLE !== undefined);
+    console.log(
+      "📋 IMAGES_LONG_IDLE definiert?",
+      this.IMAGES_LONG_IDLE !== undefined
+    );
 
-    
     this.applyGravity();
     this.animate();
-}
+  }
 
   animate() {
-    setInterval(() => {
+    this.movementInterval = setInterval(() => {
       if (this.world.keyboard.RIGHT) {
         this.moveRight();
         if (this.isAboveGround()) {
@@ -131,7 +141,7 @@ export class Character extends MovableObject {
           this.x -= 1;
         }
         this.otherDirection = true;
-        this.lastMovement = Date.now(); 
+        this.lastMovement = Date.now();
       }
 
       if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -165,62 +175,57 @@ export class Character extends MovableObject {
       }
     }, 1000 / 60);
 
-
     // ANIMATIONS-LOOP (150ms)
-setInterval(() => {
-    if (this.isDead()) {
+    this.animationInterval = setInterval(() => {
+      if (this.isDead()) {
         this.playDeadAnimation();
-    }
-    else if (this.isHurt()) {
+      } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
-    }
-    else if (this.isAboveGround()) {
+      } else if (this.isAboveGround()) {
         let jumpImage;
 
         if (this.speedY > 5) {
-            jumpImage = this.IMAGES_JUMP[1];
+          jumpImage = this.IMAGES_JUMP[1];
         } else if (this.speedY > 0) {
-            jumpImage = this.IMAGES_JUMP[2];
+          jumpImage = this.IMAGES_JUMP[2];
         } else if (this.speedY > -5) {
-            jumpImage = this.IMAGES_JUMP[2];
+          jumpImage = this.IMAGES_JUMP[2];
         } else if (this.speedY >= -15) {
-            jumpImage = this.IMAGES_JUMP[3];
+          jumpImage = this.IMAGES_JUMP[3];
         } else {
-            jumpImage = this.IMAGES_JUMP[4];
+          jumpImage = this.IMAGES_JUMP[4];
         }
 
         if (this.imageCache[jumpImage]) {
-            this.img = this.imageCache[jumpImage];
+          this.img = this.imageCache[jumpImage];
         }
-    } 
-    else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
         this.playAnimation(this.IMAGES_WALKING);
-    } 
-    else if (this.isLongIdle()) {        
+      } else if (this.isLongIdle()) {
         if (!this.IMAGES_LONG_IDLE) {
-            console.error('❌ IMAGES_LONG_IDLE ist undefined!');
-            return;
+          console.error("❌ IMAGES_LONG_IDLE ist undefined!");
+          return;
         }
         this.playAnimation(this.IMAGES_LONG_IDLE);
-    }
-    else {       
+      } else {
         if (!this.IMAGES_IDLE) {
-            console.error('❌ IMAGES_IDLE ist undefined!');
-            return;
+          console.error("❌ IMAGES_IDLE ist undefined!");
+          return;
         }
         this.playAnimation(this.IMAGES_IDLE);
-    }
-}, 150);
+      }
+    }, 150);
   }
 
   isLongIdle() {
     let timeSinceMovement = Date.now() - this.lastMovement;
-    return timeSinceMovement > 5000; 
+    return timeSinceMovement > 5000;
   }
 
   jump() {
     this.speedY = 18;
     this.isJumping = true;
+    this.world.audio.play("jump");
   }
 
   isAboveGround() {
@@ -230,10 +235,10 @@ setInterval(() => {
   hit() {
     let now = Date.now();
 
-    
     if (now - this.lastHit > 1000) {
       this.health -= 10;
       this.lastHit = now;
+      this.world.audio.play("hit");
       console.log("💔 Pepe verliert 10 Leben! Noch", this.health, "übrig");
 
       if (this.health <= 0) {
@@ -242,8 +247,6 @@ setInterval(() => {
       }
     }
   }
-
-  
 
   throwBottle() {
     let now = Date.now();
@@ -261,8 +264,9 @@ setInterval(() => {
       bottle.world = this.world;
       this.world.thrownBottles.push(bottle);
 
-      this.bottleInventory--; 
+      this.bottleInventory--;
       this.lastThrow = now;
+      this.world.audio.play("throw");
     }
   }
 
@@ -286,4 +290,18 @@ setInterval(() => {
       this.currentImage++;
     }
   }
+
+  stop() {
+    if (this.movementInterval) {
+      clearInterval(this.movementInterval);
+    }
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+    }
+    if (this.gravityInterval) {
+      clearInterval(this.gravityInterval);
+    }
+    console.log('🛑 Character gestoppt');
+  }
+
 }

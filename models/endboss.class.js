@@ -18,6 +18,9 @@ export class Endboss extends MovableObject {
     offsetY = 80;
     offsetWidth = 30;
     offsetHeight = 30;
+
+    walkInterval = null;
+    alertInterval = null; 
     
     IMAGES_WALKING = [
         'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -77,13 +80,13 @@ export class Endboss extends MovableObject {
     }
     
     animate() {
-        setInterval(() => {
+        this.walkInterval = setInterval(() => {
             if (!this.isDead()) {
                 this.moveLeft();
             }
         }, 1000 / 60);
         
-        setInterval(() => {
+        this.alertInterval = setInterval(() => {
             if (this.isDead()) {
                 this.playDeadAnimation();
             }
@@ -99,10 +102,10 @@ export class Endboss extends MovableObject {
             else {
                 this.playAnimation(this.IMAGES_WALKING);
             }
-        }, 200);  // Schneller für Attack
+        }, 200); 
     }
     
-    // nah genug für Alert
+    // nah genug für Alert ??
     isAlert() {
         let distance = this.getDistanceToCharacter();
         return distance < 500 && !this.hasBeenAlerted;
@@ -167,4 +170,17 @@ export class Endboss extends MovableObject {
             console.log('🎉 ENDBOSS BESIEGT!');
         }
     }
+
+     stop() {
+        if (this.walkInterval) {
+            clearInterval(this.walkInterval);
+        }
+        if (this.alertInterval) {
+            clearInterval(this.alertInterval);
+        }
+        console.log('🛑 Endboss gestoppt');
+    }
+
+    
 }
+

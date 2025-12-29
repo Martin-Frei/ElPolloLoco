@@ -15,17 +15,76 @@
         src="img/9_intro_outro_screens/start/startscreen_1.png"
         alt="El Pollo Loco"
       />
-      <button id="startButton" class="game-button">START GAME</button>
+
+      <div class="start-buttons">
+        <button id="startButton" class="game-button">START GAME</button>
+        <button id="showHighscores" class="game-button secondary">🏆 HIGHSCORES</button>
+        <button id="showControls" class="game-button secondary">🎮 CONTROLS</button>
+        <button id="openSettings" class="game-button secondary">⚙️ SETTINGS</button>
+      </div>
     </div>
 
-    <!-- Canvas Container (optional, für Styling) -->
+    <!-- Canvas Container -->
     <div id="canvasContainer">
       <h1>El Polo Loco</h1>
       <canvas id="canvas" width="720" height="480"></canvas>
-      <!-- ← ID hier! -->
     </div>
 
-    <!-- NEU: Win Screen (Overlay über Canvas) -->
+    <!-- Settings Screen -->
+    <div id="settingsScreen" class="screen overlay hidden">
+      <div class="settings-panel">
+        <h2>⚙️ SETTINGS</h2>
+
+        <!-- Audio Settings -->
+        <div class="settings-section">
+          <h3>🔊 Audio</h3>
+
+          <div class="setting-row">
+            <label for="musicVolume">Music Volume:</label>
+            <input
+              type="range"
+              id="musicVolume"
+              min="0"
+              max="100"
+              value="100"
+            />
+            <span id="musicVolumeValue" class="value-display">100%</span>
+          </div>
+
+          <div class="setting-row">
+            <label for="soundVolume">Sound Volume:</label>
+            <input type="range" id="soundVolume" min="0" max="100" value="30" />
+            <span id="soundVolumeValue" class="value-display">30%</span>
+          </div>
+
+          <div class="setting-row checkbox-row">
+            <label for="muteAll">
+              <input type="checkbox" id="muteAll" />
+              Mute All
+            </label>
+          </div>
+        </div>
+
+        <!-- Legal Links -->
+        <div class="settings-section">
+          <h3>📋 Legal</h3>
+          <div class="legal-links">
+            <a href="impressum.html" target="_blank">📄 Impressum</a>
+            <a href="datenschutz.html" target="_blank">🔒 Datenschutz</a>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="settings-buttons">
+          <button id="saveSettings" class="game-button">SAVE & CLOSE</button>
+          <button id="cancelSettings" class="game-button secondary">
+            CANCEL
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Win Screen -->
     <div id="winScreen" class="screen overlay hidden">
       <img src="img/You won, you lost/You Win A.png" alt="You Win" />
       <div class="button-container">
@@ -34,10 +93,142 @@
       </div>
     </div>
 
-    <!-- NEU: Lost Screen -->
+    <!-- Lost Screen -->
     <div id="lostScreen" class="screen overlay hidden">
       <img src="img/You won, you lost/You lost.png" alt="You Lost" />
       <button id="restartLostButton" class="game-button">RESTART</button>
     </div>
+
+    <!-- Score Breakdown Screen -->
+    <div id="scoreScreen" class="screen overlay hidden">
+      <div class="score-panel">
+        <h2>🎉 VICTORY!</h2>
+        
+        <div class="score-breakdown">
+          <h3>Score Breakdown:</h3>
+          
+          <div class="score-row">
+            <span class="label">💰 Coins:</span>
+            <span id="scoreCoins" class="value">--</span>
+          </div>
+          
+          <div class="score-row">
+            <span class="label">❤️ Health:</span>
+            <span id="scoreHealth" class="value">--</span>
+          </div>
+          
+          <div class="score-row">
+            <span class="label">🍾 Bottles:</span>
+            <span id="scoreBottles" class="value">--</span>
+          </div>
+          
+          <div class="score-row">
+            <span class="label">⏱️ Time Bonus:</span>
+            <span id="scoreTime" class="value">--</span>
+          </div>
+          
+          <div class="score-row subtotal">
+            <span class="label">Subtotal:</span>
+            <span id="scoreSubtotal" class="value">--</span>
+          </div>
+          
+          <div class="score-row multiplier">
+            <span class="label">✨ Multiplier:</span>
+            <span id="scoreMultiplier" class="value">--</span>
+          </div>
+          
+          <div class="score-row bonus">
+            <span class="label">🎁 Level Bonus:</span>
+            <span id="scoreLevelBonus" class="value">+500</span>
+          </div>
+          
+          <div class="score-row total">
+            <span class="label">TOTAL SCORE:</span>
+            <span id="scoreTotal" class="value">--</span>
+          </div>
+        </div>
+        
+        <input 
+          type="text" 
+          id="playerNameInput" 
+          placeholder="Enter your name..." 
+          maxlength="20"
+          class="name-input"
+        >
+        
+        <div class="score-buttons">
+          <button id="submitScore" class="game-button">SUBMIT SCORE</button>
+          <button id="skipScore" class="game-button secondary">SKIP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Highscore Screen -->
+    <div id="highscoreScreen" class="screen overlay hidden">
+      <div class="info-panel">
+        <h2>🏆 TOP 10 HIGHSCORES</h2>
+        
+        <div id="highscoreList" class="highscore-list">
+          <div class="loading">Loading...</div>
+        </div>
+        
+        <button id="closeHighscores" class="game-button">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- ========== NEU: Controls Screen ========== -->
+    <div id="controlsScreen" class="screen overlay hidden">
+      <div class="info-panel">
+        <h2>🎮 CONTROLS</h2>
+        
+        <div class="controls-detail">
+          <div class="control-item">
+            <div class="key-display">
+              <span class="key">←</span>
+              <span class="key">→</span>
+            </div>
+            <div class="control-description">
+              <h3>Move Left / Right</h3>
+              <p>Use arrow keys to walk through the level</p>
+            </div>
+          </div>
+          
+          <div class="control-item">
+            <div class="key-display">
+              <span class="key wide">SPACE</span>
+            </div>
+            <div class="control-description">
+              <h3>Jump</h3>
+              <p>Press and hold for higher jumps</p>
+            </div>
+          </div>
+          
+          <div class="control-item">
+            <div class="key-display">
+              <span class="key">D</span>
+            </div>
+            <div class="control-description">
+              <h3>Throw Bottle</h3>
+              <p>Attack chickens and the endboss</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="game-tips">
+          <h3>💡 Tips:</h3>
+          <ul>
+            <li>Collect bottles to increase your inventory (max 10)</li>
+            <li>Jump on chickens to defeat them</li>
+            <li>Hit the endboss 10 times with bottles to win</li>
+            <li>Collect all coins for maximum score</li>
+            <li>Finish quickly for time bonus</li>
+          </ul>
+        </div>
+        
+        <button id="closeControls" class="game-button">CLOSE</button>
+      </div>
+    </div>
+    <!-- ========== ENDE Controls Screen ========== -->
+
   </body>
 </html>

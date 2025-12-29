@@ -85,6 +85,10 @@ export class ThrownBottle extends MovableObject {
       clearInterval(this.throwInterval);
     }
 
+    if (this.world && this.world.audio) {
+        this.world.audio.play('bottleBreak');
+    }
+
     if (this.rotationInterval) {
          console.log('🛑 Stoppe Gravity'); 
       clearInterval(this.rotationInterval);

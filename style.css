@@ -30,7 +30,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #000;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .screen img {
@@ -95,9 +95,16 @@ body {
 
 /* Overlay Screens  */
 .screen.overlay {
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.85);  /* Halbtransparent */
-  z-index: 500; 
+    position: fixed;
+    top: 0;              
+    left: 0;          
+    width: 100vw;       
+    height: 100vh;       
+    background-color: rgba(0, 0, 0, 0.95); 
+    z-index: 1000;       
+    display: flex;       
+    justify-content: center; 
+    align-items: center;    
 }
 
 .screen.overlay img {
@@ -116,4 +123,549 @@ body {
 /* Hidden Class */
 .hidden {
   display: none !important;
+}
+
+.controls-info {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  max-width: 300px;
+}
+
+.controls-info h3 {
+  color: #FFD700;
+  margin: 0 0 15px 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.key {
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  border: 2px solid #444;
+}
+
+.key.wide {
+  min-width: 80px;
+}
+
+.label {
+  color: white;
+  font-size: 16px;
+}
+
+/* ===== CONTROLS INFO ===== */
+.controls-info {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 30px auto;
+    max-width: 350px;
+    border: 3px solid #FFD700;
+}
+
+.controls-info h3 {
+    color: #FFD700;
+    margin: 0 0 20px 0;
+    font-size: 28px;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.key {
+    background: linear-gradient(145deg, #3a3a3a, #1a1a1a);
+    color: #FFD700;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    min-width: 50px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    border: 2px solid #555;
+}
+
+.key.wide {
+    min-width: 100px;
+}
+
+.label {
+    color: white;
+    font-size: 18px;
+    flex: 1;
+}
+
+/* ===== SETTINGS PANEL ===== */
+.screen.overlay {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-panel {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    border: 3px solid #FFD700;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+.settings-panel h2 {
+    color: #FFD700;
+    text-align: center;
+    margin: 0 0 30px 0;
+    font-size: 32px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.settings-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #444;
+}
+
+.settings-section:last-of-type {
+    border-bottom: none;
+}
+
+.settings-section h3 {
+    color: #FFD700;
+    margin: 0 0 15px 0;
+    font-size: 22px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.setting-row label {
+    color: white;
+    font-size: 16px;
+    min-width: 140px;
+}
+
+.setting-row input[type="range"] {
+    flex: 1;
+    height: 8px;
+    border-radius: 5px;
+    background: #444;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.setting-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FFD700;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.setting-row input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #FFD700;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.value-display {
+    color: #FFD700;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: right;
+}
+
+.checkbox-row {
+    margin-top: 10px;
+}
+
+.checkbox-row label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Legal Links */
+.legal-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.legal-links a {
+    color: #FFD700;
+    text-decoration: none;
+    padding: 10px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.legal-links a:hover {
+    background: rgba(255, 215, 0, 0.2);
+}
+
+/* Settings Buttons */
+.settings-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.settings-buttons button {
+    flex: 1;
+}
+
+.game-button.secondary {
+    background: linear-gradient(145deg, #555, #333);
+}
+
+.game-button.secondary:hover {
+    background: linear-gradient(145deg, #666, #444);
+}
+
+.score-panel {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 90%;
+    border: 3px solid #FFD700;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.score-panel h2 {
+    color: #FFD700;
+    text-align: center;
+    margin: 0 0 30px 0;
+    font-size: 36px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.score-breakdown {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.score-breakdown h3 {
+    color: #FFD700;
+    margin: 0 0 15px 0;
+    font-size: 22px;
+    text-align: center;
+}
+
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+    color: white;
+    font-size: 16px;
+}
+
+.score-row:last-child {
+    border-bottom: none;
+}
+
+.score-row.subtotal {
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid #666;
+    font-weight: bold;
+    color: #FFD700;
+    font-size: 18px;
+}
+
+.score-row.multiplier {
+    color: #FFA500;
+    font-style: italic;
+    font-size: 18px;
+}
+
+.score-row.bonus {
+    color: #90EE90;
+    font-size: 18px;
+}
+
+.score-row.total {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 3px solid #FFD700;
+    font-size: 28px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.score-row .label {
+    font-weight: normal;
+}
+
+.score-row .value {
+    font-weight: bold;
+}
+
+/* Name Input */
+.name-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.name-input:focus {
+    outline: none;
+    border-color: #FFA500;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.name-input::placeholder {
+    color: #999;
+}
+
+/* Score Buttons */
+.score-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.score-buttons button {
+    flex: 1;
+}
+/* ===== START BUTTONS ===== */
+.start-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 300px;
+}
+
+/* ===== INFO PANELS (Highscore & Controls) ===== */
+.info-panel {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 90%;
+    border: 3px solid #FFD700;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.info-panel h2 {
+    color: #FFD700;
+    text-align: center;
+    margin: 0 0 30px 0;
+    font-size: 36px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+/* ===== HIGHSCORE LIST ===== */
+.highscore-list {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    min-height: 300px;
+}
+
+.highscore-list .loading {
+    color: #999;
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+}
+
+.highscore-list ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.highscore-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #FFD700;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.highscore-entry:hover {
+    transform: translateX(5px);
+    background: rgba(255, 215, 0, 0.2);
+}
+
+.highscore-entry.rank-1 {
+    border-left-color: #FFD700;
+    background: rgba(255, 215, 0, 0.2);
+}
+
+.highscore-entry.rank-2 {
+    border-left-color: #C0C0C0;
+}
+
+.highscore-entry.rank-3 {
+    border-left-color: #CD7F32;
+}
+
+.highscore-rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    min-width: 40px;
+    text-align: center;
+}
+
+.highscore-name {
+    flex: 1;
+    font-size: 18px;
+    color: white;
+    margin: 0 20px;
+}
+
+.highscore-score {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.highscore-details {
+    font-size: 12px;
+    color: #999;
+    margin-left: 15px;
+}
+
+/* ===== CONTROLS DETAIL ===== */
+.controls-detail {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: 10px;
+}
+
+.control-item:last-child {
+    margin-bottom: 0;
+}
+
+.key-display {
+    display: flex;
+    gap: 10px;
+}
+
+.control-description {
+    flex: 1;
+}
+
+.control-description h3 {
+    color: #FFD700;
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+
+.control-description p {
+    color: #ccc;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Game Tips */
+.game-tips {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.game-tips h3 {
+    color: #FFD700;
+    margin: 0 0 15px 0;
+    font-size: 20px;
+}
+
+.game-tips ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.game-tips li {
+    color: white;
+    padding: 8px 0;
+    padding-left: 25px;
+    position: relative;
+}
+
+.game-tips li:before {
+    content: "▸";
+    color: #FFD700;
+    position: absolute;
+    left: 0;
+    font-size: 18px;
 }

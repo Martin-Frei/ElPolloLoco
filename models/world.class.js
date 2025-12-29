@@ -2,7 +2,7 @@
 
 import { Character } from "./character.class.js";
 import { Air } from "./air.class.js";
-
+import { AudioManager } from "./audio-manager.class.js";
 import { ThrownBottle } from "./thrown-bottle.class.js";
 import { Statusbar } from "./statusbar.class.js";
 
@@ -15,6 +15,8 @@ export class World {
   level;
   thrownBottles = [];
 
+  audio = new AudioManager();
+
   air = new Air("img/5_background/layers/air.png");
   character;
 
@@ -26,6 +28,7 @@ export class World {
 
   gameWon = false;
   gameLost = false;
+  endbossMusicStarted = false;
 
   debugMode = true; // Debug-Boxen an/aus
 
@@ -33,7 +36,7 @@ export class World {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
-    this.level = level; 
+    this.level = level;
     this.character = new Character(this);
     this.level.endboss.world = this;
     this.createStatusbars();
@@ -147,38 +150,36 @@ export class World {
     this.ctx.restore();
   }
 
- run() {
-    this.gameLoop = setInterval(() => {  
-      this.checkGameOver();  
-      
-      if (!this.gameWon && !this.gameLost) { 
+  run() {
+    this.gameLoop = setInterval(() => {
+      this.checkGameOver();
+
+      if (!this.gameWon && !this.gameLost) {
         this.checkCollisions();
         this.cleanupBottles();
       }
     }, 1000 / 60);
-}
+  }
 
-
-checkGameOver() {
+  checkGameOver() {
     // WIN
     if (this.level.endboss.health <= 0 && !this.gameWon) {
       this.gameWon = true;
-      console.log('🎉 LEVEL GESCHAFFT!');
+      console.log("🎉 LEVEL GESCHAFFT!");
       setTimeout(() => {
-        window.showWinScreen(); 
+        window.showWinScreen();
       }, 1000);
     }
-    
+
     // LOST
     if (this.character.health <= 0 && !this.gameLost) {
       this.gameLost = true;
-      console.log('💀 GAME OVER!');
+      console.log("💀 GAME OVER!");
       setTimeout(() => {
         window.showLostScreen();
       }, 1000);
     }
-}
-
+  }
 
   checkCollisions() {
     this.checkBottleCollisions();
@@ -201,6 +202,7 @@ checkGameOver() {
           return true;
         }
         this.character.bottleInventory++;
+        this.audio.play("collectBottle");
         console.log(
           "🍾 Flasche gesammelt! Inventar:",
           this.character.bottleInventory,
@@ -222,6 +224,8 @@ checkGameOver() {
           "übrig"
         );
         this.collectedCoins++;
+        this.audio.play("collectCoin");
+
         return false;
       }
       return true;
@@ -293,13 +297,17 @@ checkGameOver() {
       if (!enemy.isDead && bottle.isColliding(enemy)) {
         console.log("💥 Flasche trifft Huhn!");
 
-        // Huhn stirbt
+        if (enemy.type === "small") {
+          this.audio.play("chickenSmallHit");
+        } else {
+          this.audio.play("chickenHit");
+        }
+
         enemy.die();
         setTimeout(() => {
           this.level.enemies.splice(index, 1);
         }, 500);
 
-        // Flasche zerschellt
         bottle.splash();
       }
     });
@@ -324,20 +332,6 @@ checkGameOver() {
     );
   }
 
-  checkBottleVsEnemies(bottle) {
-    this.level.enemies.forEach((enemy, index) => {
-      if (!enemy.isDead) {
-        bottle.hitsTarget(enemy, () => {
-          console.log("💥 Flasche trifft Huhn!");
-          enemy.die();
-          setTimeout(() => {
-            this.level.enemies.splice(index, 1);
-          }, 500);
-        });
-      }
-    });
-  }
-
   checkBottleVsEndboss(bottle) {
     bottle.hitsTarget(this.level.endboss, () => {
       console.log("💥 Flasche trifft Endboss!");
@@ -355,7 +349,10 @@ checkGameOver() {
   drawStatusbars() {
     // Aktualisiere Werte
     this.healthBar.setValue(this.character.health, 100);
-    this.bottleBar.setValue(this.character.bottleInventory || 0, this.level.maxBottles);
+    this.bottleBar.setValue(
+      this.character.bottleInventory || 0,
+      this.level.maxBottles
+    );
     this.coinBar.setValue(
       this.collectedCoins,
       this.level.coins.length + this.collectedCoins
@@ -383,28 +380,62 @@ checkGameOver() {
 
   isEndbossNear() {
     let distance = Math.abs(this.character.x - this.level.endboss.x);
-    return distance < 600; // Zeige Bar wenn < 600px entfernt
+    let isNear = distance < 600;
+
+    if (isNear && !this.endbossMusicStarted) {
+      this.endbossMusicStarted = true;
+
+      this.audio.play("chickenAlarm");
+
+      setTimeout(() => {
+        this.audio.playMusic("endboss", 1.0);
+      }, 1000); // 1 Sekunde nach 'chickenAlarm'
+
+      console.log("🦖 BOSS FIGHT!");
+    }
+
+    return isNear; // => Statusbar
   }
 
-  // Zeichnet Text auf Canvas
   drawStatusbarText(text, x, y) {
     this.ctx.font = "bold 20px Arial";
     this.ctx.fillStyle = "#fff";
     this.ctx.strokeStyle = "#000";
     this.ctx.lineWidth = 3;
 
-    // Schwarzer Rand
     this.ctx.strokeText(text, x, y);
 
-    // Weißer Text
     this.ctx.fillText(text, x, y);
   }
 
-    stop() {
+  stop() {
+    // Stoppe Game Loop
     if (this.gameLoop) {
       clearInterval(this.gameLoop);
     }
-    console.log('🛑 World gestoppt');
+
+    // Stoppe Character
+    if (this.character) {
+      this.character.stop();
+    }
+
+    // Stoppe Endboss
+    if (this.level && this.level.endboss) {
+      this.level.endboss.stop();
+    }
+
+    // Stoppe alle Enemies (Chickens)
+    if (this.level && this.level.enemies) {
+      this.level.enemies.forEach((enemy) => {
+        if (enemy.stop) {
+          enemy.stop();
+        }
+      });
+    }
+
+    // Stoppe Audio
+    if (this.audio) {
+      this.audio.stopMusic();
+    }
   }
-  
 }
